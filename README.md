@@ -2,7 +2,7 @@
 
 A remake of NES IceClimber using PyGame.
 
-### Installtion and Running:
+### Installation and Running:
 
 - Install pygame:
 `sudo pip install pygame`
