@@ -39,7 +39,7 @@ def renderStart(state):	# show the level when enter is pressed on main menu
 	print('RenderStart(' + str(state) + ')')
 	if state:
 		sounds['show_level'].play()
-		for scroll_Y_axis in [n/2.0 for n in range(-1200, 0, 1)]:	# got these values experimentally and another for loop to use float
+		for scroll_Y_axis in [n/2.0 for n in range(-2400, 0, 1)]:	# got these values experimentally and another for loop to use float
 			screen.fill((0, 0, 0))
 			screen.blit(images['level'], (0, scroll_Y_axis))
 			pygame.display.update()	# update screen
