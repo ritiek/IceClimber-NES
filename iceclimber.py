@@ -13,6 +13,8 @@ def loadImages():	# a function to load all the images
 	images = {}
 	images['main_menu'] = pygame.image.load('assets/sprites/MainMenu.png').convert_alpha()
 	images['level'] = pygame.image.load('assets/sprites/level.png').convert_alpha()
+	images['sprites1'] = pygame.image.load('assets/sprites/sprites1.png').convert_alpha()
+	images['sprites2'] = pygame.image.load('assets/sprites/sprites2.png').convert_alpha()
 	return images
 def loadSounds():	# a function to load all the sounds
 	sounds = {}
@@ -24,6 +26,12 @@ def loadSounds():	# a function to load all the sounds
 
 images = loadImages()	# let images be the return value of loadImages()
 sounds = loadSounds()	# let sounds be the return value of loadSounds()
+
+#sheet.set_clip(pygame.Rect(SPRT_RECT_X, SPRT_RECT_Y, LEN_SPRT_X, LEN_SPRT_Y)) #Locate the sprite you want
+#draw_me = sheet.subsurface(sheet.get_clip()) #Extract the sprite you want
+
+images['sprites1'].set_clip(pygame.Rect(7, 24, 12, 19))
+player = pygame.transform.scale(images['sprites1'].subsurface(images['sprites1'].get_clip()), (30, 50))
 
 
 # I added an argument state to the below function
@@ -51,7 +59,8 @@ def renderStart():	# show the level when enter is pressed on main menu
 def mainGame():	# the main game
 	print('mainGame()')
 	screen.fill((0, 0, 0))
-	screen.blit(images['level'], (0, -1190))
+	#screen.blit(images['level'], (0, -1190))
+	screen.blit(player, (0, 0))
 	sounds['background'].play(-1)
 	pygame.display.update()
 
@@ -66,7 +75,7 @@ while not done:
 	for event in pygame.event.get():	# get all the user inputs
 		if event.type == pygame.QUIT:	# if cross clicked on window
 			done = True	# done==True means the while loop must end
-		if event.type == KEYDOWN and event.key == K_RETURN:	#	if return key is pressed
+		if event.type == KEYDOWN and event.key == K_RETURN and not is_in_game:	#	if return key is pressed
 			mainMenu(state=False)	# run mainMenu(state) with state=False
 			renderStart()
 			mainGame()
