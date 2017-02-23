@@ -1,6 +1,8 @@
 ## IceClimber-NES
 
-A remake of NES IceClimber using PyGame.
+A remake of NES IceClimber using PyGame
+
+![Alt text](screenshot.png?raw=true)
 
 ### Installation and Running:
 
