@@ -12,9 +12,9 @@ pygame.display.set_caption('NES - Ice Climber')	# set window title
 def loadImages():	# a function to load all the images
 	images = {}
 	images['main_menu'] = pygame.image.load('assets/sprites/MainMenu.png').convert_alpha()
-	images['level'] = pygame.image.load('assets/sprites/level.png').convert_alpha()
+	images['level'] = pygame.image.load('assets/sprites/Level.png').convert_alpha()
 	images['sprites1'] = pygame.image.load('assets/sprites/sprites1.png').convert_alpha()
-	images['sprites2'] = pygame.image.load('assets/sprites/sprites2.png').convert_alpha()
+	#images['sprites2'] = pygame.image.load('assets/sprites/sprites2.png').convert_alpha()
 	return images
 def loadSounds():	# a function to load all the sounds
 	sounds = {}
