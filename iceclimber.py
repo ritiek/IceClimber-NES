@@ -13,8 +13,7 @@ def loadImages():	# a function to load all the images
 	images = {}
 	images['main_menu'] = pygame.image.load('assets/sprites/MainMenu.png').convert_alpha()
 	images['level'] = pygame.image.load('assets/sprites/Level.png').convert_alpha()
-	images['sprites1'] = pygame.image.load('assets/sprites/sprites1.png').convert_alpha()
-	#images['sprites2'] = pygame.image.load('assets/sprites/sprites2.png').convert_alpha()
+	images['sprites'] = pygame.image.load('assets/sprites/SpriteSheetTweaked.png').convert_alpha()
 	return images
 def loadSounds():	# a function to load all the sounds
 	sounds = {}
@@ -30,8 +29,8 @@ sounds = loadSounds()	# let sounds be the return value of loadSounds()
 #sheet.set_clip(pygame.Rect(SPRT_RECT_X, SPRT_RECT_Y, LEN_SPRT_X, LEN_SPRT_Y)) #Locate the sprite you want
 #draw_me = sheet.subsurface(sheet.get_clip()) #Extract the sprite you want
 
-images['sprites1'].set_clip(pygame.Rect(7, 24, 12, 19))
-player = pygame.transform.scale(images['sprites1'].subsurface(images['sprites1'].get_clip()), (30, 50))
+images['sprites'].set_clip(pygame.Rect(7, 24, 12, 19))
+player = pygame.transform.scale(images['sprites'].subsurface(images['sprites'].get_clip()), (30, 50))
 
 
 # I added an argument state to the below function
