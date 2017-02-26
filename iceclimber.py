@@ -29,8 +29,8 @@ sounds = loadSounds()	# let sounds be the return value of loadSounds()
 #sheet.set_clip(pygame.Rect(SPRT_RECT_X, SPRT_RECT_Y, LEN_SPRT_X, LEN_SPRT_Y)) #Locate the sprite you want
 #draw_me = sheet.subsurface(sheet.get_clip()) #Extract the sprite you want
 
-images['sprites'].set_clip(pygame.Rect(7, 24, 12, 19))
-player = pygame.transform.scale(images['sprites'].subsurface(images['sprites'].get_clip()), (30, 50))
+images['sprites'].set_clip(pygame.Rect(4, 22, 14, 23))
+player = pygame.transform.scale(images['sprites'].subsurface(images['sprites'].get_clip()), (27, 47))
 
 
 # I added an argument state to the below function
@@ -58,8 +58,8 @@ def renderStart():	# show the level when enter is pressed on main menu
 def mainGame():	# the main game
 	print('mainGame()')
 	screen.fill((0, 0, 0))
-	#screen.blit(images['level'], (0, -1190))
-	screen.blit(player, (0, 0))
+	screen.blit(images['level'], (0, -1190))
+	screen.blit(player, (256, 415))
 	sounds['background'].play(-1)
 	pygame.display.update()
 
