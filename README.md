@@ -1,26 +1,23 @@
-## IceClimber-NES
+# IceClimber-NES
 
-A remake of NES IceClimber using PyGame
+A remake of NES IceClimber using PyGame.
 
-![Alt text](screenshot.png?raw=true)
+<img src="https://i.imgur.com/eLDF87E.png" width="450">
 
-### Installation and Running:
+## Installation:
 
-- Install pygame:
-`sudo pip install pygame`
+```
+pip install pygame
+git clone https://github.com/ritiek/IceClimber-NES
+cd IceClimber-NES
+```
 
-- Clone this repo:
-`git clone https://github.com/Ritiek/IceClimber-NES`
+Execute it with
 
-- Run the game:
-`sudo python iceclimber.py`
+```
+python iceclimber.py
+```
 
-### Contributing and Forking:
-
-- The code is fully commented so as to be beginner friendly! So feel free to dig in and fork this repo.
-- This game is in very early stages so you can expect alot of bugs. Please open an issue if you find one!
-- If you want to contribute, go through the open issues and see if you can help me out a bit :)
-
-### License:
+## License:
 
 `The MIT License`
