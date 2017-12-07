@@ -1,21 +1,23 @@
 #!/usr/bin/env python
 
-# we need pygame ofcourse
 import pygame
 from pygame.locals import *
 import time
 
-pygame.init()	# initialize pygame
-screen = pygame.display.set_mode((512,480))	# set display dimensions
-pygame.display.set_caption('NES - Ice Climber')	# set window title
+pygame.init()
+# set window dimensions
+screen = pygame.display.set_mode((512,480))
+# set window title
+pygame.display.set_caption('NES - Ice Climber')
 
-def loadImages():	# a function to load all the images
+def load_images():
 	images = {}
 	images['main_menu'] = pygame.image.load('assets/sprites/MainMenu.png').convert_alpha()
 	images['level'] = pygame.image.load('assets/sprites/Level.png').convert_alpha()
 	images['sprites'] = pygame.image.load('assets/sprites/SpriteSheetTweaked.png').convert_alpha()
 	return images
-def loadSounds():	# a function to load all the sounds
+
+def load_sounds():
 	sounds = {}
 	sounds['main_menu'] = pygame.mixer.Sound('assets/audio/MainMenu.wav')
 	sounds['show_level'] = pygame.mixer.Sound('assets/audio/ShowLevel.wav')
@@ -23,9 +25,8 @@ def loadSounds():	# a function to load all the sounds
 	sounds['jump'] = pygame.mixer.Sound('assets/audio/Jump.wav')
 	return sounds
 
-images = loadImages()	# let images be the return value of loadImages()
-sounds = loadSounds()	# let sounds be the return value of loadSounds()
-
+images = load_images()
+sounds = load_sounds()
 #sheet.set_clip(pygame.Rect(SPRT_RECT_X, SPRT_RECT_Y, LEN_SPRT_X, LEN_SPRT_Y)) #Locate the sprite you want
 #draw_me = sheet.subsurface(sheet.get_clip()) #Extract the sprite you want
 
@@ -37,50 +38,58 @@ player = pygame.transform.scale(images['sprites'].subsurface(images['sprites'].g
 # state=True means to start the function
 # state=False means to exit the function gracefully
 
-def mainMenu(state):	# works for the main menu of the game
-	print('mainMenu(' + str(state) + ')')	# helps in debug xD
-	if state:	# if state==True
-		screen.blit(images['main_menu'], (0,0))	# load background image
-		sounds['main_menu'].play(-1)	# play iceclimber's menu theme. -1 means in endless loop
-	else:	# if state==False
-		sounds['main_menu'].stop()	# stop playing the iceclimber's menu theme
 
-def renderStart():	# show the level when enter is pressed on main menu
-	print('RenderStart()')
+def main_menu(state):
+	print('main_menu(' + str(state) + ')')
+	if state:	# if state==True
+        # load background image
+		screen.blit(images['main_menu'], (0,0))
+        # loop main theme forever
+		sounds['main_menu'].play(-1)
+	else:
+		sounds['main_menu'].stop()
+
+
+def render_start():
+	print('render_start()')
 	showing_level = sounds['show_level'].play()
-	for scroll_Y_axis in [n/2.0 for n in range(-2380, 0, 1)]:	# got these values experimentally and another for loop to use float to scroll level slowly
+	for scroll_Y_axis in [n/2.0 for n in range(-2380, 0, 1)]:
 		screen.fill((0, 0, 0))
 		screen.blit(images['level'], (0, scroll_Y_axis))
-		pygame.display.update()	# update screen
-	while showing_level.get_busy():	# pause as long as show_level sound is playing
+		pygame.display.update()
+	# sound is playing
+	while showing_level.get_busy():
 		pygame.time.wait(100)
 
-def mainGame():	# the main game
-	print('mainGame()')
+
+def main_game():
+	print('main_game()')
 	screen.fill((0, 0, 0))
 	screen.blit(images['level'], (0, -1190))
 	screen.blit(player, (256, 415))
 	sounds['background'].play(-1)
 	pygame.display.update()
 
-def Jump():
+
+def jump():
 	sounds['jump'].play()
 
-is_in_game = False	# to know if user is in actual game
-done = False	# helps to determine the game must end when crossed is clicked on window
 
-mainMenu(state=True)	# show main menu
+is_in_game = False
+done = False
+
+main_menu(state=True)
 while not done:
-	for event in pygame.event.get():	# get all the user inputs
-		if event.type == pygame.QUIT:	# if cross clicked on window
-			done = True	# done==True means the while loop must end
-		if event.type == KEYDOWN and event.key == K_RETURN and not is_in_game:	#	if return key is pressed
-			mainMenu(state=False)	# run mainMenu(state) with state=False
-			renderStart()
-			mainGame()
-			is_in_game = True	# actual game begins
+	for event in pygame.event.get():
+		if event.type == pygame.QUIT:
+			done = True
+		if event.type == KEYDOWN and event.key == K_RETURN and not is_in_game:
+			main_menu(state=False)
+			render_start()
+			main_game()
+			is_in_game = True
 		if event.type == KEYDOWN and event.key == K_x and is_in_game:
-			Jump()
-
-	pygame.time.Clock().tick(60)	# run the window with max 60 fps
-	pygame.display.update()	# update screen
+			jump()
+	# run the window with max 60 fps
+	pygame.time.Clock().tick(60)
+	pygame.display.update()
