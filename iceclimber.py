@@ -17,6 +17,7 @@ class LoadAssets:
         images = {}
         images['main_menu'] = pygame.image.load('assets/sprites/MainMenu.png').convert_alpha()
         images['level'] = pygame.image.load('assets/sprites/Level.png').convert_alpha()
+        images['hammer'] = pygame.image.load('assets/sprites/Hammer.png').convert_alpha()
         return images
 
     def sounds(self):
@@ -38,12 +39,10 @@ class SpriteSheet:
         scaled_sprite = pygame.transform.scale(sprite, scale)
         return scaled_sprite
 
-
-"""
-class Sprites(SpriteSheet):
-    def __init__(self):
-        pass
-"""
+    def make_clips(self):
+        sprites = {}
+        sprites['player'] = self.clip(rectangle=(4, 22, 14, 23), scale=(27, 47))
+        return sprites
 
 
 loader = LoadAssets()
@@ -51,18 +50,17 @@ images = loader.images()
 sounds = loader.sounds()
 
 sheet = SpriteSheet('assets/sprites/SpriteSheetTweaked.png')
-player = sheet.clip(rectangle=(4, 22, 14, 23), scale=(27, 47))
+sprites = sheet.make_clips()
 
 
-def main_menu(state):
-    print('main_menu(' + str(state) + ')')
-    if state:   # if state==True
-        # load background image
-        screen.blit(images['main_menu'], (0,0))
-        # loop main theme forever
-        sounds['main_menu'].play(-1)
-    else:
-        sounds['main_menu'].stop()
+def main_menu():
+    print('main_menu()')
+    # load background image
+    screen.blit(images['main_menu'], (0,0))
+    screen.blit(images['hammer'], (105, 255))
+    # loop main theme forever
+    sounds['main_menu'].play(-1)
+    return sounds['main_menu']
 
 
 def render_start():
@@ -72,7 +70,7 @@ def render_start():
         screen.fill((0, 0, 0))
         screen.blit(images['level'], (0, scroll_Y_axis))
         pygame.display.update()
-    # sound is playing
+    # wait until sound stops
     while showing_level.get_busy():
         pygame.time.wait(100)
 
@@ -81,7 +79,7 @@ def main_game():
     print('main_game()')
     screen.fill((0, 0, 0))
     screen.blit(images['level'], (0, -1190))
-    screen.blit(player, (256, 415))
+    screen.blit(sprites['player'], (256, 415))
     sounds['background'].play(-1)
     pygame.display.update()
 
@@ -93,15 +91,45 @@ def jump():
 is_in_game = False
 done = False
 
-main_menu(state=True)
+main_menu_event = main_menu()
+
+single_player = True
+
+while True:
+    event = pygame.event.get()
+
+    try:
+        event, *_ = event
+    except ValueError:
+        continue
+
+    if event.type == 2 and event.key in (303, 304):
+        if single_player:
+            pygame.draw.rect(screen, (0,0,0), (105,255,24,24))
+            screen.blit(images['hammer'], (105, 288))
+        else:
+            pygame.draw.rect(screen, (0,0,0), (105,288,24,24))
+            screen.blit(images['hammer'], (105, 255))
+
+        single_player = not single_player
+
+    elif event.type == 2 and event.key in (13, 271):
+        break
+
+    pygame.time.Clock().tick(60)
+    pygame.display.update()
+
+
+main_menu_event.stop()
+render_start()
+main_game()
+
 while not done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = True
         if event.type == KEYDOWN and event.key == K_RETURN and not is_in_game:
-            main_menu(state=False)
-            render_start()
-            main_game()
+            main_menu()
             is_in_game = True
         if event.type == KEYDOWN and event.key == K_x and is_in_game:
             jump()
