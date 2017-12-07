@@ -4,39 +4,54 @@ import pygame
 from pygame.locals import *
 import time
 
+
 pygame.init()
 # set window dimensions
 screen = pygame.display.set_mode((512,480))
 # set window title
 pygame.display.set_caption('NES - Ice Climber')
 
-def load_images():
-	images = {}
-	images['main_menu'] = pygame.image.load('assets/sprites/MainMenu.png').convert_alpha()
-	images['level'] = pygame.image.load('assets/sprites/Level.png').convert_alpha()
-	images['sprites'] = pygame.image.load('assets/sprites/SpriteSheetTweaked.png').convert_alpha()
-	return images
 
-def load_sounds():
-	sounds = {}
-	sounds['main_menu'] = pygame.mixer.Sound('assets/audio/MainMenu.wav')
-	sounds['show_level'] = pygame.mixer.Sound('assets/audio/ShowLevel.wav')
-	sounds['background'] = pygame.mixer.Sound('assets/audio/Background.wav')
-	sounds['jump'] = pygame.mixer.Sound('assets/audio/Jump.wav')
-	return sounds
+class LoadAssets:
+    def images(self):
+        images = {}
+        images['main_menu'] = pygame.image.load('assets/sprites/MainMenu.png').convert_alpha()
+        images['level'] = pygame.image.load('assets/sprites/Level.png').convert_alpha()
+        return images
 
-images = load_images()
-sounds = load_sounds()
-#sheet.set_clip(pygame.Rect(SPRT_RECT_X, SPRT_RECT_Y, LEN_SPRT_X, LEN_SPRT_Y)) #Locate the sprite you want
-#draw_me = sheet.subsurface(sheet.get_clip()) #Extract the sprite you want
-
-images['sprites'].set_clip(pygame.Rect(4, 22, 14, 23))
-player = pygame.transform.scale(images['sprites'].subsurface(images['sprites'].get_clip()), (27, 47))
+    def sounds(self):
+        sounds = {}
+        sounds['main_menu'] = pygame.mixer.Sound('assets/audio/MainMenu.wav')
+        sounds['show_level'] = pygame.mixer.Sound('assets/audio/ShowLevel.wav')
+        sounds['background'] = pygame.mixer.Sound('assets/audio/Background.wav')
+        sounds['jump'] = pygame.mixer.Sound('assets/audio/Jump.wav')
+        return sounds
 
 
-# I added an argument state to the below function
-# state=True means to start the function
-# state=False means to exit the function gracefully
+class SpriteSheet:
+    def __init__(self, path):
+        self.sheet = pygame.image.load(path).convert_alpha()
+
+    def clip(self, rectangle, scale):
+        self.sheet.set_clip(pygame.Rect(rectangle))
+        sprite = self.sheet.subsurface(self.sheet.get_clip())
+        scaled_sprite = pygame.transform.scale(sprite, scale)
+        return scaled_sprite
+
+
+"""
+class Sprites(SpriteSheet):
+    def __init__(self):
+        pass
+"""
+
+
+loader = LoadAssets()
+images = loader.images()
+sounds = loader.sounds()
+
+sheet = SpriteSheet('assets/sprites/SpriteSheetTweaked.png')
+player = sheet.clip(rectangle=(4, 22, 14, 23), scale=(27, 47))
 
 
 def main_menu(state):
