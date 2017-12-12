@@ -12,7 +12,8 @@ screen = pygame.display.set_mode((512,480))
 # set window title
 pygame.display.set_caption('NES - Ice Climber')
 PLAYER_POS = (256, 415)
-PLAYER_SPEED = 4
+PLAYER_SPEED = 3
+GRAVITY = 10
 
 
 class LoadAssets:
@@ -50,12 +51,19 @@ class SpriteSheet:
     def make_clips(self):
         sprites = {}
         sprites['player_right'] = []
-        sprites['player_right'].append(self.clip(rectangle=(4, 22, 14, 23), scale=(27, 47)))
-        sprites['player_right'].append(self.clip(rectangle=(19, 22, 14, 23), scale=(27, 43)))
-        sprites['player_right'].append(self.clip(rectangle=(35, 21, 13, 19), scale=(27, 43)))
-        sprites['player_right'].append(self.clip(rectangle=(53, 21, 16, 19), scale=(27, 43)))
+        sprites['player_right'].append(self.clip(rectangle=(4, 22, 14, 23), scale=(30, 46)))
+        sprites['player_right'].append(self.clip(rectangle=(19, 22, 14, 23), scale=(30, 46)))
+        sprites['player_right'].append(self.clip(rectangle=(35, 21, 13, 19), scale=(29, 42)))
+        sprites['player_right'].append(self.clip(rectangle=(53, 21, 16, 19), scale=(32, 42)))
+
+        sprites['jump_right'] = []
+        sprites['jump_right'].append(self.clip(rectangle=(83, 49, 20, 20), scale=(39, 46)))
+        sprites['jump_right'].append(self.clip(rectangle=(109, 46, 15, 24), scale=(33, 50)))
+
         sprites['player_left'] = [pygame.transform.flip(x, True, False)
                                   for x in sprites['player_right']]
+        sprites['jump_left'] = [pygame.transform.flip(x, True, False)
+                                for x in sprites['jump_right']]
         sprites['green_full_brick'] = self.clip(rectangle=(6, 160, 9, 8), scale=(16, 13))
         return sprites
 
@@ -134,7 +142,7 @@ class MainGame:
         print('main_game()')
         screen.fill((0, 0, 0))
         screen.blit(images['level'], (0, -1190))
-        screen.blit(sprites['player_right'][0], (256, 415))
+        screen.blit(sprites['player_right'][0], PLAYER_POS)
         screen.blit(sprites['green_full_brick'], (128, 360))
         sounds['background'].play(-1)
         pygame.display.update()
@@ -156,14 +164,29 @@ class Movement:
         self.x += self.speed
         self.draw(sprite)
 
+    def jump(self, sprite, sound):
+        sound.play()
+        speed = 10
+        while speed > 0:
+            print(speed)
+            self.y -= speed
+            self.draw(sprite[0])
+            pygame.time.wait(30)
+            speed -= 0.5
+        while speed <= 10:
+            print(speed)
+            self.y += speed
+            self.draw(sprite[1])
+            pygame.time.wait(30)
+            speed += 0.5
+
     def draw(self, sprite):
         self.erase()
         screen.blit(sprite, (self.x, self.y))
         pygame.display.update()
 
     def erase(self):
-        #pygame.draw.rect(screen, (0,0,0), (self.x, self.y, 27, 39))
-        pygame.draw.rect(screen, (0,0,0), (self.x-4, self.y, 35, 39))
+        pygame.draw.rect(screen, (0,0,0), (self.x-4, self.y, 37, 39))
 
 
 loader = LoadAssets(assets='assets')
@@ -175,12 +198,15 @@ sprites = sheet.make_clips()
 
 move = Movement(pos=PLAYER_POS, speed=PLAYER_SPEED)
 
-MainMenu()
+#MainMenu()
 MainGame()
 
 done = False
 r_sprite = 0
 l_sprite = 0
+j_sprite = 0
+is_right = True
+
 while not done:
     keys = pygame.key.get_pressed()
     if keys[K_RIGHT]:
@@ -189,22 +215,31 @@ while not done:
             r_sprite = 0
         print('move.right()')
         move.right(sprites['player_right'][r_sprite])
-        pygame.time.wait(60)
+        pygame.time.wait(30)
         move.draw(sprites['player_right'][0])
+        is_right = True
     elif keys[K_LEFT]:
         l_sprite += 1
         if l_sprite > 3:
             l_sprite = 0
         print('move.left()')
         move.left(sprites['player_left'][l_sprite])
-        pygame.time.wait(60)
+        pygame.time.wait(30)
         move.draw(sprites['player_left'][0])
+        is_right = False
 
 
     for event in pygame.event.get():
         print(event)
         if event.type == 2 and event.key == 120:
-            pass
+            print('move.jump()')
+            if is_right:
+                move.jump(sprites['jump_right'], sounds['jump'])
+                move.draw(sprites['player_right'][0])
+            else:
+                move.jump(sprites['jump_left'], sounds['jump'])
+                move.draw(sprites['player_left'][0])
+
     # run the window with max 60 fps
     #pygame.display.update()
     #pygame.time.Clock().tick(60)
